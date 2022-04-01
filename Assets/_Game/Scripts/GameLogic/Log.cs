@@ -22,9 +22,9 @@ public class Log : MonoBehaviour
         for (int i = 0; i < level; i++)
         {
             var s = new RotateSequence();
-            s.speed = Random.Range(-5f, 5f);
-            if (s.speed < 0) s.speed -= 1f;
-            if (s.speed >= 0) s.speed += 1f;
+            s.speed = Random.Range(-5.5f, 5.5f);
+            if (s.speed < 0) s.speed -= 2f;
+            if (s.speed >= 0) s.speed += 2f;
             s.duration = Random.Range(1f, 5f);
 
             Sequences.Add(s);
