@@ -13,8 +13,8 @@ public class PlayerInput : MonoSingleton<PlayerInput>
         // if (Input.GetKeyDown(KeyCode.Space))
         //     OnClickedSpace?.Invoke();
 
-        if (Input.GetKeyDown(KeyCode.R))
-            OnClickedR?.Invoke();
+        // if (Input.GetKeyDown(KeyCode.R))
+        //     OnClickedR?.Invoke();
     }
 
     public void InvokeOnClickedSpace()
