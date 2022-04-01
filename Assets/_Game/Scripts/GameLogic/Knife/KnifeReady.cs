@@ -18,7 +18,10 @@ public class KnifeReady : KnifeBase
 
     public override void ExitState()
     {
+        base.ExitState();
         tweenMove?.Kill();
+        tweenFade?.Kill();
+        mainKnife.sprRenderer.color = Color.white;
     }
 
     public override void OnReload()
@@ -32,7 +35,7 @@ public class KnifeReady : KnifeBase
     private void TweenMove()
     {
         float value = 0;
-        tweenMove = DOTween.To(x => value = x, 0f, 1f, 0.25f);
+        tweenMove = DOTween.To(x => value = x, 0f, 1f, 0.15f);
         tweenMove.OnUpdate(() =>
         {
             mainKnife.transform.localPosition = new Vector3(0f, Mathf.Lerp(-4.5f, -3.5f, value), 0f);
@@ -42,7 +45,7 @@ public class KnifeReady : KnifeBase
     private void TweenFade()
     {
         float value = 0;
-        tweenFade = DOTween.To(x => value = x, 0f, 1f, 0.25f);
+        tweenFade = DOTween.To(x => value = x, 0f, 1f, 0.15f);
         tweenFade.OnUpdate(() =>
         {
             mainKnife.sprRenderer.color = new Color(1f, 1f, 1f, value);
