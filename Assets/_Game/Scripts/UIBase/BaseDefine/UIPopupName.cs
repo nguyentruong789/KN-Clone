@@ -4,6 +4,7 @@ public enum UIPopupName
     PopupTest = 1,
     PopupEndGame = 2,
     PopupNextLevel = 3,
+    PopupMainMenu = 4,
 }
 public enum UIPopupGame
 {

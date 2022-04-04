@@ -4,18 +4,18 @@ using UnityEngine;
 using CodeStringers.Utils;
 using Dispatcher;
 using UniRx;
+using TMPro;
 
 public class GameUI : MonoBehaviour
 {
     [SerializeField] RectTransform pnlShot;
+    [SerializeField] TextMeshProUGUI txtCurrentLevel;
 
     private PlayerInput playerInput => PlayerInput.Instance;
     private GameManager gameManager => GameManager.Instance;
 
     private void Start()
     {
-        playerInput.OnClickedR += UpdateUI;
-
         MessageDispatcher.AddListener(MessageType.OnResetGame, OnResetGame);
         MessageDispatcher.AddListener(MessageType.OnUpdateUI, OnUpdateUI);
     }
@@ -53,5 +53,7 @@ public class GameUI : MonoBehaviour
 
         for (int i = idx; i < pnlShot.childCount; i++)
             pnlShot.GetChild(i).gameObject.SetActive(false);
+
+        txtCurrentLevel.text = gameManager.Level.ToString();
     }
 }

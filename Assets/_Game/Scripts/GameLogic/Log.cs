@@ -4,6 +4,7 @@ using UnityEngine;
 using Dispatcher;
 using CodeStringers.UIBase;
 using DG.Tweening;
+using UniRx;
 
 public class Log : MonoBehaviour
 {
@@ -15,6 +16,11 @@ public class Log : MonoBehaviour
     [SerializeField] ParticleSystem particle;
     [SerializeField] SpriteRenderer flashLog;
     [SerializeField] AudioClip hit;
+    [SerializeField] AudioClip crash;
+    [SerializeField] Explodable explodable;
+    [SerializeField] ExplosionForce ef;
+    [SerializeField] SpriteRenderer sprRenderer;
+    [SerializeField] CircleCollider2D circleCollider;
 
     private void GenerateSequenceBasedOnLevel(int level)
     {
@@ -49,6 +55,12 @@ public class Log : MonoBehaviour
         StartRotate();
         Count = 0;
         flashLog.color = new Color(1, 1, 1, 0);
+        this.transform.localScale = Vector3.zero;
+        Zoom(0.3f);
+
+        sprRenderer.enabled = true;
+        circleCollider.enabled = true;
+        explodable.RetrieveFragments();
     }
 
     private void OnChangeGamePhase(IMessage rMessage)
@@ -59,11 +71,10 @@ public class Log : MonoBehaviour
         {
             case GamePhase.MENU:
                 StopAllCoroutines();
+                this.transform.localScale = Vector3.zero;
                 break;
             case GamePhase.GAMEPLAY:
-                GenerateSequenceBasedOnLevel(gameManager.Level);
-                StartRotate();
-                Count = 0;
+                OnResetGame(null);
                 break;
         }
     }
@@ -71,6 +82,11 @@ public class Log : MonoBehaviour
     private void StartRotate()
     {
         StartCoroutine(Rotate_Corou());
+    }
+
+    private void Zoom(float endValue)
+    {
+        this.transform.DOScale(endValue, 0.4f);
     }
 
     private IEnumerator Rotate_Corou()
@@ -103,7 +119,28 @@ public class Log : MonoBehaviour
         if (Count >= gameManager.NumShot)
         {
             StopAllCoroutines();
-            UIManager.ShowPopup(UIPopupName.PopupNextLevel);
+
+            sprRenderer.enabled = false;
+            circleCollider.enabled = false;
+            explodable.Explode();
+            ef.doExplosion(transform.position);
+            AudioSource.PlayClipAtPoint(crash, Camera.main.transform.position);
+
+            foreach (var knife in this.transform.GetComponentsInChildren<Knife>())
+            {
+                knife.transform.parent = null;
+                ((KnifeReflect)knife.reflectState).SetOtherKnife(knife);
+                knife.TransitionToState(knife.reflectState);
+            }
+
+            //Next game sequence
+            Observable.Timer(System.TimeSpan.FromSeconds(1f)).Subscribe(_ =>
+            {
+                gameManager.UpdateGameLevel(gameManager.Level + 1);
+                gameManager.ResetGame();
+            }).AddTo(this);
+
+            //UIManager.ShowPopup(UIPopupName.PopupNextLevel);
         }
     }
 
@@ -117,7 +154,7 @@ public class Log : MonoBehaviour
         tween.OnUpdate(() =>
         {
             transform.position = new Vector3(transform.position.x,
-            Mathf.Lerp(2.5f, 2.55f, value), transform.position.z);
+            Mathf.Lerp(2.5f, 2.7f, value), transform.position.z);
             flashLog.color = new Color(1, 1, 1, Mathf.Lerp(0, 0.5f, value));
         })
         .OnComplete(() =>
@@ -126,7 +163,7 @@ public class Log : MonoBehaviour
             tween.OnUpdate(() =>
             {
                 transform.position = new Vector3(transform.position.x,
-                Mathf.Lerp(2.5f, 2.55f, value), transform.position.z);
+                Mathf.Lerp(2.5f, 2.7f, value), transform.position.z);
                 flashLog.color = new Color(1, 1, 1, Mathf.Lerp(0, 0.5f, value));
             });
         });

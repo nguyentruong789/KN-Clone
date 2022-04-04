@@ -12,7 +12,6 @@ public class KnifeReflect : KnifeBase
 
         CalculateReflect(otherKnife.transform);
         ReflectRotate();
-        AudioSource.PlayClipAtPoint(mainKnife.clash, Camera.main.transform.position);
 
         ReturnToPool();
     }

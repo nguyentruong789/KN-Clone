@@ -81,6 +81,7 @@ public class Knife : MonoBehaviour
             StopAllCoroutines();
             ((KnifeReflect)reflectState).SetOtherKnife(otherKnife);
             TransitionToState(reflectState);
+            AudioSource.PlayClipAtPoint(clash, Camera.main.transform.position);
 
             UIManager.ShowPopup(UIPopupName.PopupEndGame);
         }

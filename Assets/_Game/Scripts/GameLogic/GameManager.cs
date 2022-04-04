@@ -25,16 +25,14 @@ public class GameManager : MonoSingleton<GameManager>
 
     private void Start()
     {
-        Observable.TimerFrame(1).Subscribe(_ =>
-        {
-            ChangeGamePhase(GamePhase.GAMEPLAY);
-        }).AddTo(this);
-
+        // Observable.TimerFrame(1).Subscribe(_ =>
+        // {
+        //     ChangeGamePhase(GamePhase.MENU);
+        // }).AddTo(this);
+        ChangeGamePhase(GamePhase.MENU);
         pool.Register(GameDefine.KNIFE);
-        playerInput.OnClickedSpace += SpawnNewKnife;
-        playerInput.OnClickedR += ResetGame;
 
-        SpawnNewKnife();
+
     }
 
     public void ResetGame()
@@ -74,6 +72,12 @@ public class GameManager : MonoSingleton<GameManager>
         {
             case GamePhase.GAMEPLAY:
                 ResetGame();
+                SpawnNewKnife();
+                playerInput.OnClickedSpace += SpawnNewKnife;
+                break;
+            case GamePhase.MENU:
+                UIManager.ShowPopup(UIPopupName.PopupMainMenu);
+                playerInput.OnClickedSpace -= SpawnNewKnife;
                 break;
         }
     }
