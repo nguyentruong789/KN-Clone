@@ -25,11 +25,11 @@ public class GameManager : MonoSingleton<GameManager>
 
     private void Start()
     {
-        // Observable.TimerFrame(1).Subscribe(_ =>
-        // {
-        //     ChangeGamePhase(GamePhase.MENU);
-        // }).AddTo(this);
-        ChangeGamePhase(GamePhase.MENU);
+        Observable.TimerFrame(1).Subscribe(_ =>
+        {
+            ChangeGamePhase(GamePhase.MENU);
+        }).AddTo(this);
+        //ChangeGamePhase(GamePhase.MENU);
         pool.Register(GameDefine.KNIFE);
 
 
